@@ -100,6 +100,13 @@ class RLMFetchedResultsController: NSObject {
         self.sectionNameKeyPath = sectionNameKeyPath
     }
     
+    deinit {
+        self.delegate = nil
+        if let notificationToken = self.notificationToken {
+            self.realm?.removeNotification(notificationToken)
+        }
+    }
+    
     /* Returns the results of the fetch.
      Returns nil if the performFetch: hasn't been called.
      */
@@ -145,9 +152,7 @@ class RLMFetchedResultsController: NSObject {
     }
     
     private var _runningTask: _RLMFetchTask?
-    
-    private var addToken: NotificationToken?
-    private var removeToken: NotificationToken?
+    private var notificationToken: NotificationToken?
     func performFetch() throws {
         
         let fetchRequest = self.fetchRequest
@@ -173,18 +178,12 @@ class RLMFetchedResultsController: NSObject {
             results = results.sorted(sortDescriptors)
         }
         
-        self.addToken = results.addNotificationBlock { (results, error) in
-            
-            if error != nil {
-                // TODO
-                
-            }
-            
+        self.notificationToken = realm.addNotificationBlock({ (notification, realm) in
             if self._runningTask != nil {
                 self._runningTask?.cancel()
             }
             self.fetch(sectionNameKeyPath)
-        }
+        })
         
         self.fetch(sectionNameKeyPath)
     }
