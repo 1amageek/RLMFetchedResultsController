@@ -1,9 +1,9 @@
-# :octocat:RLMFetchedResultsController:octocat:
+# :octocat: RLMFetchedResultsController :octocat:
 
 RLMFetchedResultsController is FetchedResultsController to operate in realm.
 This can make the Section by setting the sectionNameKeyPath in the same way as NSFetchedResultsController.
 
-## :laughing:Usage:laughing:
+## :laughing: Usage :laughing:
 
 You can easily use if you know how to use the NSFetchedResultsController.
 However, `performFetch` is to operate in the background, you need to implement `controllerDidChangeContent`.
@@ -72,7 +72,7 @@ However, `performFetch` is to operate in the background, you need to implement `
     }
 ```
 
-## :warning:Warnning:warning:
+## :warning: Warnning :warning:
 
 It has not been able to implement the next Function
 
@@ -90,3 +90,8 @@ It has not been able to implement the next Function
     }
 
 ``` 
+
+## :sparkles: Features :sparkles:
+
+- Enhance the Delegate
+- Performance Improvement
