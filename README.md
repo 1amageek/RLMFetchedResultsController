@@ -66,6 +66,8 @@ However, `performFetch` is to operate in the background, you need to implement `
     }
 ```
 
+### :recycle: Update data
+
 ``` swift
     func controllerDidChangeContent(controller: RLMFetchedResultsController) {
         self.tableView.reloadData()
