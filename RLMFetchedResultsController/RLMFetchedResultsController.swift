@@ -127,13 +127,19 @@ class RLMFetchedResultsController: NSObject {
     private let queue = dispatch_queue_create("RLM.fetchedResultsController.queue", DISPATCH_QUEUE_SERIAL)
     private class _RLMFetchTask {
         private(set) var isCanceled: Bool
+        private(set) var isCompleted: Bool
         
         init() {
             isCanceled = false
+            isCompleted = false
         }
         
         func cancel() {
             self.isCanceled = true
+        }
+        
+        func finish() {
+            self.isCompleted = true
         }
         
     }
@@ -174,10 +180,16 @@ class RLMFetchedResultsController: NSObject {
                 
             }
             
-            self.didChangeResults()
-            
+            if self._runningTask != nil {
+                self._runningTask?.cancel()
+            }
+            self.fetch(sectionNameKeyPath)
         }
         
+        self.fetch(sectionNameKeyPath)
+    }
+    
+    private func fetch(sectionNameKeyPath: String) {
         _runningTask = _findSectionInfoWithFetchRequest(fetchRequest, exist: { (sectionInfo) in
             
             sectionInfo._numberOfObjects = sectionInfo._numberOfObjects + 1
@@ -196,14 +208,14 @@ class RLMFetchedResultsController: NSObject {
                 let sectionInfo: _RLMFetchedResultsSectionInfo = _RLMFetchedResultsSectionInfo(fetchRequest: fetchRequest, name: name)
                 return sectionInfo
                 
-            }) { (sections, error) in
-                
-                if error != nil {
-                    print(error)
-                }
-                
-                self.sections = sections.map({$0 as _RLMFetchedResultsSectionInfo})
-                self.delegate?.controllerDidChangeContent(self)
+        }) { (sections, error) in
+            
+            if error != nil {
+                print(error)
+            }
+            
+            self.sections = sections.map({$0 as _RLMFetchedResultsSectionInfo})
+            self.delegate?.controllerDidChangeContent(self)
         }
     }
     
@@ -297,6 +309,8 @@ class RLMFetchedResultsController: NSObject {
                 dispatch_async(dispatch_get_main_queue(), {
                     completion(sections, nil)
                 })
+                task.finish()
+                self._runningTask = nil
             }
             
         }

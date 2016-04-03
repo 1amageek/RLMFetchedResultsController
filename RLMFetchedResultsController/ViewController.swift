@@ -32,6 +32,19 @@ class ViewController: UITableViewController, RLMFetchedResultsControllerDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) { 
+            let realm = try! Realm()
+            for i in 0..<100 {
+                for k in 0..<10 {
+                    let dog: Dog = Dog()
+                    dog.name = String(format: "%ld-%ld",i,k)
+                    try! realm.write {
+                        realm.add(dog)
+                    }
+                    print(dog.name)
+                }
+            }
+        }
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
