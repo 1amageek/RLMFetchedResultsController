@@ -9,8 +9,12 @@
 import RealmSwift
 
 class RLMFetchRequest {
- 
-    init(type: Object.Type){
+    
+    init<T : Object>(_: T.Type) {
+        self.type = T.self as T.Type
+    }
+    
+    init(type: Object.Type) {
         self.type = type
     }
     

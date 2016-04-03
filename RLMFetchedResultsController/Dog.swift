@@ -11,3 +11,11 @@ import RealmSwift
 class Dog: Object {
     dynamic var name = ""
 }
+
+extension Dog {
+    var year: String {
+        get {
+            return "2016"
+        }
+    }
+}
